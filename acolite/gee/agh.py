@@ -445,7 +445,7 @@ def agh(image, imColl, rsrd = {}, lutd = {}, luti = {}, settings = {}):
         print('Getting geometry and gas transmittance')
         ## get geometry percentiles
         geom_percentile = 50
-        prc = i.reduceRegion(reducer= ee.Reducer.percentile([geom_percentile]), bestEffort=True).getInfo()
+        prc = i.reduceRegion(reducer= ee.Reducer.percentile([7]), bestEffort=True).getInfo()
         for b in bands:
             ### get geometry if available
             if b in ['SAA', 'SZA', 'VAA', 'VZA']:

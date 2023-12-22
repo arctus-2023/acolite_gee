@@ -60,6 +60,9 @@ def acolite_l1r(bundle, setu, input_type=None):
     ################
 
     ################
+    if input_type == 'ArctusGEE':
+        l1r_files, setu = ac.gee_arctus.l1_convert(bundle, settings = setu)
+
     ## Landsat
     if input_type == 'Landsat':
         l1r_files, setu = ac.landsat.l1_convert(bundle, settings = setu)

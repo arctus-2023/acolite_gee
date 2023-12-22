@@ -65,3 +65,4 @@ from .polylakes import *
 
 from .rgb_stretch import *
 from .scale_dist import *
+from .tif_read import *

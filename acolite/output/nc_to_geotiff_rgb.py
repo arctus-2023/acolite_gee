@@ -121,10 +121,15 @@ def nc_to_geotiff_rgb(f, settings = {}, use_gdal_merge_import = True, \
             ## end imported gdal_merge
         else:
             ## use os to run gdal_merge.py
-            tempfiles = ["'{}'".format(tf) for tf in tempfiles] ## add quotes to allow spaces in file path
-            cmd = ['gdal_merge.py',  "-o '{}'".format(outfile), '-separate'] + tempfiles
-            ret = os.popen(' '.join(cmd)).read()
+            # tempfiles = ["'{}'".format(tf) for tf in tempfiles] ## add quotes to allow spaces in file path
+            cmd = ['python','C:/Users/pany0/miniconda3/envs/sme-chain2/Scripts/gdal_merge.py',  "-o '{}'".format(outfile), '-separate'] + tempfiles
+
+            # ret = os.popen(' '.join(cmd)).read()
             ##sp = subprocess.run(' '.join(cmd),shell=True, check=True, stdout=subprocess.PIPE)
+            tempfiles_ = [_.replace('\\','/') for _ in tempfiles]
+            cmd_subp = ['python','C:/Users/pany0/miniconda3/envs/sme-chain2/Scripts/gdal_merge.py','-o',outfile, '-separate'] + tempfiles_
+            print(cmd_subp)
+            ret = subprocess.call(cmd_subp)
 
         if os.path.exists(outfile): print('Wrote {}'.format(outfile))
 

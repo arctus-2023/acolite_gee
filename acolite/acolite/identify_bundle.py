@@ -30,6 +30,16 @@ def identify_bundle(bundle, input_type = None, output = None):
 
         ################
         ## ACOLITE
+
+        if ext in ['.tif','.tiff']:
+            try:
+                meta = ac.shared.get_tags_meta(bundle)
+                if ('info' in meta.keys()) and ('info_item' in meta.keys()):
+                    input_type = 'ArctusGEE'
+                    break
+            except:
+                pass
+
         try:
             gatts = ac.shared.nc_gatts(bundle)
             datasets = ac.shared.nc_datasets(bundle)

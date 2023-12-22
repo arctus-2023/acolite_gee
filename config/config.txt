@@ -46,8 +46,8 @@ libradtran_dir=$ACDIR/external/libRadtran-2.0.2
 
 ## EarthData credentials (will be set to environment variables by acolite)
 ## alternatively use .netrc for machine earthdata
-EARTHDATA_u=
-EARTHDATA_p=
+EARTHDATA_u=zygomare
+EARTHDATA_p=Boubou1234
 
 ## list of hyperspectral sensors (do not edit)
 hyper_sensors=CHRIS,PRISMA,ISS_HICO,EO1_HYPERION,DESIS_HSI,ENMAP_HSI,ISS_EMIT,HYPSO1
