@@ -136,8 +136,12 @@ def get_projection(meta, s2_target_res=10, return_grids=False):
     #dct['yrange'][1]-=dct['pixel_size'][1]
     #dct['xdim'] = int((dct['xrange'][1]-dct['xrange'][0])/dct['pixel_size'][0])+1
     #dct['ydim'] = int((dct['yrange'][1]-dct['yrange'][0])/dct['pixel_size'][1])+1
-    dct['xdim'] = int((dct['xrange'][1]-dct['xrange'][0])/dct['pixel_size'][0])
-    dct['ydim'] = int((dct['yrange'][1]-dct['yrange'][0])/dct['pixel_size'][1])
+
+    # dct['xdim'] = int((dct['xrange'][1]-dct['xrange'][0])/dct['pixel_size'][0])
+    # dct['ydim'] = int((dct['yrange'][1]-dct['yrange'][0])/dct['pixel_size'][1])
+
+    dct['xdim'] = int(np.ceil( (dct['xrange'][1] - dct['xrange'][0]) / dct['pixel_size'][0]))
+    dct['ydim'] = int(np.ceil( (dct['yrange'][1] - dct['yrange'][0]) / dct['pixel_size'][1]))
 
 
     return(dct)
