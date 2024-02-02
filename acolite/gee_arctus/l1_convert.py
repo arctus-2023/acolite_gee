@@ -302,7 +302,7 @@ def l1_convert(inputfile, output = None, settings = {},
         ## auxillary data
 
         ## write TOA bands
-        quant = 1e4
+        quant = 1e4 if sensor.startswith('S2') else 1
         nodata = 0
 
         if verbosity > 1: print('Converting bands')

@@ -27,8 +27,9 @@ class LevelTOA(object):
         self.sensor = 'S2A_MSI'
         if self.composite_scenes[0][:3] == 'S2B':
             self.sensor = 'S2B_MSI'
-        elif 1:
-            pass
+        elif self.composite_scenes[0].startswith('LC08') or self.composite_scenes[0].startswith('L8'):
+            self.sensor = 'L8_OLI'
+
 
         self.theta_v = np.asarray([float(_.split(',')[1]) for _ in _temp]).mean()
         self.theta_s = np.asarray([float(_.split(',')[2]) for _ in _temp]).mean()
