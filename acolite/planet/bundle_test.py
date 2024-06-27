@@ -13,6 +13,7 @@
 ##                2023-04-18 (QV) added PSScene and files/PSScene dname options
 ##                                added support for NTF files
 ##                2023-05-08 (QV) added support for composite files
+##                2023-05-25 (QV) set sid to None if manifest is given
 
 def bundle_test(bundle_in):
     import os, glob
@@ -21,10 +22,13 @@ def bundle_test(bundle_in):
         bundle = bundle_in
         sid = None
     else:
-        bundle = os.path.dirname(bundle_in)
+        bundle = os.path.dirname(bundle_in) #+ os.path.sep
         fn = os.path.basename(bundle_in)
-        sid = fn[0:23]
-        if 'ssc' in fn: sid = fn[0:27]
+        if fn == 'manifest.json':
+            sid = None
+        else:
+            sid = fn[0:23]
+            if 'ssc' in fn: sid = fn[0:27]
 
     ## check files in bundle
     files = []
@@ -35,8 +39,8 @@ def bundle_test(bundle_in):
         files_dir = os.path.join(bundle, dname)
         if os.path.exists(files_dir):
             if 'PSScene' in dname:
-                #for f in glob.glob('{}/*/*/*'.format(files_dir)): files.append(f)
-                for f in glob.glob('{}/*/analytic*/*'.format(files_dir)): files.append(f)
+                for f in os.listdir(files_dir): files.append(os.path.join(files_dir, f)) ## newer zip bundles
+                for f in glob.glob('{}/*/analytic*/*'.format(files_dir)): files.append(f) ## older zip bundles
             else:
                 for f in os.listdir(files_dir): files.append(os.path.join(files_dir, f))
     files.sort()
@@ -44,8 +48,8 @@ def bundle_test(bundle_in):
     datafiles = {}
     for i, file in enumerate(files):
         fname = os.path.basename(file)
-        fn,ext = os.path.splitext(fname)
-        if len(fn) < 23: continue
+        fn, ext = os.path.splitext(fname)
+        #if len(fn) < 23: continue
         if sid is None:
             scene_id = fn[0:23]
             if 'ssc' in fn: scene_id = fn[0:27]
@@ -53,6 +57,8 @@ def bundle_test(bundle_in):
             scene_id = sid
         if scene_id not in fn: continue
         if ext not in ['.json', '.tif', '.xml', '.ntf']: continue
+        if fname[-8:] == '.aux.xml': continue ## skip QGIS files
+
         band,clp=None,''
         if 'clip' in fn:
             clp='_clip'
