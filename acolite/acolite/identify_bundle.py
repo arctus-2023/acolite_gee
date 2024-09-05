@@ -30,9 +30,9 @@ def identify_bundle(bundle, input_type = None, output = None):
 
         ################
         ## ACOLITE
-
         if ext in ['.tif','.tiff']:
             try:
+                print("this is ARCTUSGEE")
                 meta = ac.shared.get_tags_meta(bundle)
                 if ('info' in meta.keys()) and ('info_item' in meta.keys()):
                     input_type = 'ArctusGEE'
@@ -249,8 +249,10 @@ def identify_bundle(bundle, input_type = None, output = None):
         ## Planet data
         ## unzip files if needed
         try:
+            print('PLANET SECTION')
             ## test files
             files = ac.planet.bundle_test(bundle)
+            print('this is file in identify_bundle {}'.format(files))
             ## files now contains scene_id keys
             flist = list(files.keys())
             flist.sort()
@@ -270,6 +272,7 @@ def identify_bundle(bundle, input_type = None, output = None):
             elif 'composite' in files[fk]:
                 image_file = files[fk]['composite']['path']
                 metafile = files[flist[-1]]['metadata']['path']
+                #metafile = files[fk]['metadata']['path']
             meta = ac.planet.metadata_parse(metafile)
             if ('platform' in meta) & (os.path.exists(image_file)):
                 input_type = 'Planet'

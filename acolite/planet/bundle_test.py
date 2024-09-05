@@ -46,12 +46,14 @@ def bundle_test(bundle_in):
     files.sort()
 
     datafiles = {}
+    is_composite = True if os.path.join(bundle, 'composite.tif') in files else False
     for i, file in enumerate(files):
         fname = os.path.basename(file)
         fn, ext = os.path.splitext(fname)
-        #if len(fn) < 23: continue
+        if len(fn) < 23: continue
         if sid is None:
             scene_id = fn[0:23]
+            print(scene_id)
             if 'ssc' in fn: scene_id = fn[0:27]
         else:
             scene_id = sid
@@ -91,7 +93,6 @@ def bundle_test(bundle_in):
         if ('Analytic_SR{}.tif'.format(clp) in fname)|\
            ('AnalyticMS_SR_8b{}.tif'.format(clp) in fname):
             band = 'sr'
-
         if ('composite.tif' in fname): band = 'composite'
         if ('composite_udm2.tif' in fname): band = 'composite_udm2'
 
@@ -99,4 +100,11 @@ def bundle_test(bundle_in):
         if os.path.isfile(file):
             if scene_id not in datafiles: datafiles[scene_id] = {}
             datafiles[scene_id][band] = {"path":file, "fname":fname, "ext": ext}
+    if is_composite:
+        for scene_id in datafiles.keys():
+            datafiles[scene_id]['composite'] = {"path": os.path.join(bundle, 'composite.tif'), "fname": 'composite.tif',
+                                                "ext": '.tif'}
+            datafiles[scene_id]['composite_udm2'] = {"path": os.path.join(bundle, 'composite_udm2.tif'),
+                                                     "fname": 'composite_udm2.tif',
+                                                     "ext": '.tif'}
     return(datafiles)

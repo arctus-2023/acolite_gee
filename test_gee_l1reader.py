@@ -1,65 +1,53 @@
 import os, sys
-sys.path.append("c:/Users/pany0/WorkSpace/pycharm_proj/acolite")
-
+import glob
+from concurrent.futures import ProcessPoolExecutor
+sys.path.append("/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/src/python/acolite_gee")
+os.environ['PROJ_LIB'] = '/home/tj/miniconda3/envs/intelliport/share/proj/'
 import acolite as ac
+from pathlib import Path
 
-# s2_f = 'S2A_MSIL1C_20211221T155701_N0301_R054_T18TXR_20211221T175233.SAFE'
-# l1d = "C:/Users/pany0/WorkSpace/projects/SmartHabour"
-# out_dir = "C:/Users/pany0/WorkSpace/projects/SmartHabour"
-
-s2_f = 'S2_2019-07-26_L1TOA-SecterA.tif'
-l1d = "D:/SDBs/BdC/data/s2_gee/l1_toa/SecterA"
-out_dir = "D:/SDBs/BdC/data/s2_gee/l2_acolite"
-
-
+#s2_f = '*composite.tif'
+#s2_f = "IMG_PHR1A_MS_201512201607389_ORT_fc7c5c90-501a-42b9-c2c8-c8a7ca25844c-1.TIF"
+#l1d = "/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleaides/*/"
+l1d = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleaides/dimapV2_PHR1B_acq20160906_del34f1b93e/'
+#l1d = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleaides/dimapV2_PHR1B_acq20160906_del34f1b93e/'
+#l1d = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Planet/archives/Hatfield+Consultants+_+AECOM-+R15-+10_29_2021+-14_57_34+and+14_57_36_psscene_analytic_8b_udm2/'
+#l2_dir = "/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Planet/archives/Hatfield+Consultants+_+AECOM-+R15-+10_29_2021+-14_57_34+and+14_57_36_psscene_analytic_8b_udm2/"
+#l2_dir = "/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleaides/dimapV2_PHR1B_acq20190815_delb5c408e9/"
+l2_dir = "/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleaides/dimapV2_PHR1B_acq20160906_del34f1b93e/"
+#datadir='/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Planet/'
 def process(l1c):
-    out_name = 'test_merge_s2'
-    # settings = {
-    #     'inputfile': l1c,
-    #     'output': os.path.join(out_dir, out_name),
-    #     'limit': limit,
-    #     'l2w_parameters': 'Rrs_*',
-    #     'output_rhorc': False,
-    #     'l2r_export_geotiff': False,
-    #     'l2w_export_geotiff': False,
-    #     'atmospheric_correction': True,
-    #     'aerosol_correction': 'dark_spectrum',
-    #     'adjacency_correction': False,
-    #     'dsf_aot_estimate': 'fixed',
-    #     'ancillary_data': False,
-    #     's2_target_res': 10,
-    #     'l2w_mask': False,
-    #     'dsf_residual_glint_correction': False,
-    #     'l2w_mask_negative_rhow': False,
-    #     'map_raster': True,
-    #     'l1r_export_geotiff_rgb': True,
-    #     'l2r_export_geotiff_rgb': True
-    # }
-
+    out_name = 'Acolite_out'
+    #p= Path(l1c)
+    #l2_dir= str(p.parent)
     settings = {
-            'inputfile':l1c,
-            'output': os.path.join(out_dir,out_name),
-            'merge_tiles': False,
-            # 'limit': limit,## south, west,north,east
-            # 'polygon':os.path.join(l1d, 'aoi_small.geojson'),
-            # 'polygon_limit':True,
-            'l2w_parameters': 'Rrs_*',
-            'output_rhorc': True,
-            'l1r_export_geotiff': False,
-            'l2r_export_geotiff': False,
-            'l2w_export_geotiff': False,
-            'dsf_aot_estimate':'fixed',
-            'atmospheric_correction':True,
-            'ancillary_data': True,
-            'map_raster': False,
-            's2_target_res': 10,
-            'l1r_export_geotiff_rgb':True,
-            'l2r_export_geotiff_rgb':True,
-            'use_gdal_merge_import':False
-            }
+        'inputfile': l1c,
+        'output': os.path.join(l2_dir, out_name),
+        'l2w_parameters': ['rhorc_*', 'rhos_*','Rrs_*','spm_nechad2010','tur_nechad2010'],
+        'output_rhorc': False,
+        'l1r_export_geotiff': True,
+        'l2r_export_geotiff': False,
+        'l2w_export_geotiff': True,
+        'dsf_aot_estimate': 'fixed',
+        'atmospheric_correction': True,
+        'ancillary_data': False,
+        's2_target_res': 10,
+        'l1r_export_geotiff_rgb': False,
+        'l2r_export_geotiff_rgb': False,
+        'use_gdal_merge_import': False
+    }
+    ac.acolite.acolite_run(settings=settings, inputfile=l1c)
 
-    print(settings)
-    ac.acolite.acolite_run(settings=settings)
+#def main():
+#        data_files = glob.glob(os.path.join(l1d))
+#        #fnames = glob.glob(data_files[0] + '*/*/*R*C*.TIF')
+#        with ProcessPoolExecutor(max_workers=2) as executor:
+#                executor.map(process, data_files)
+
+#if __name__ == '__main__':
+#   main()
+
+process(l1c=l1d)
 
 
-process(l1c = os.path.join(l1d,s2_f))
+

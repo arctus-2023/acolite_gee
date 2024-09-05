@@ -61,6 +61,7 @@ def l1_convert(inputfile, output = None, settings = {},
             if pmfile == '': continue
             pmeta = ac.pleiades.metadata_parse(pmfile, pan=True)
 
+        print(pmeta)
         ## merge sensor specific settings
         setu = ac.acolite.settings.parse(meta['sensor'], settings=settings)
         verbosity = setu['verbosity']
@@ -77,8 +78,11 @@ def l1_convert(inputfile, output = None, settings = {},
             p_resolution = 0.5
         elif meta['sensor'] in ['PNEO3', 'PNEO4']:
             btags = {'BlueCoastal':'DB', 'Blue':'B', 'Green':'G', 'Red':'R', 'RedEdge':'RE', 'NIR':'NIR', 'PAN':'PAN'}
-            ms_resolution = 1.32
-            p_resolution = 0.33
+            #ms_resolution = 1.32
+            ms_resolution = 1.2
+            #p_resolution = 0.33
+            p_resolution = 0.3
+
 
         ## parse metadata
         dtime = dateutil.parser.parse(meta['isotime'])
@@ -138,10 +142,10 @@ def l1_convert(inputfile, output = None, settings = {},
         ## find projection info based on first file
         dct = None
         ifile = ifiles[0]
-        try:
-            dct = ac.shared.projection_read(ifile)
-        except:
-            print('Could not determine projection from {}'.format(ifile))
+        #try:
+        #    dct = ac.shared.projection_read(ifile)
+        #except:
+        #    print('Could not determine projection from {}'.format(ifile))
 
         new_method, reproject = False, False
         ## set up reprojection

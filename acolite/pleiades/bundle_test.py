@@ -144,6 +144,7 @@ def bundle_test(file, listpan=True):
                 panimagefile+=['']*len(im)
                 panmetafile+=['']*len(im)
 
+    print(imagefile, metafile, panimagefile, panmetafile)
     if (len(metafile) != 0) & (len(imagefile) != 0):
         if listpan:
              return(imagefile, metafile, panimagefile, panmetafile)
