@@ -1,7 +1,7 @@
 import os, sys
 import glob
 from concurrent.futures import ProcessPoolExecutor
-sys.path.append("/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/src/python/acolite_gee")
+sys.path.append("/mnt/0_ARCTUS_Projects/19_SAGE-Port/src/python/acolite_gee")
 os.environ['PROJ_LIB'] = '/home/tj/miniconda3/envs/intelliport/share/proj/'
 import acolite as ac
 from pathlib import Path
@@ -15,9 +15,13 @@ from pathlib import Path
 #l2_dir = "/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Planet/archives/Hatfield+Consultants+_+AECOM-+R15-+10_29_2021+-14_57_34+and+14_57_36_psscene_analytic_8b_udm2/"
 #l2_dir = "/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleaides/dimapV2_PHR1B_acq20190815_delb5c408e9/"
 #l1d = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Planet/last_version/Hatfield+Consultants+_+AECOM-+R15-+4_28_2023+-15_13_37+and+15_13_39_psscene_analytic_8b_udm2/'
-l1d = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Planet/last_version/'
-l2_dir = l1d
-#datadir=
+#l1d = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Planet/last_version/'
+#l1d = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleiades/WO_000243456_1_3_SAL24224502-3_ACQ_PNEO3_04734513309191+(2)/000243456_1_2_STD_A/'
+#l1d = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleiades/WO_000194483_1_4_SAL24178158-4_ACQ_PNEO4_04304911719484+(2)/000194483_1_4_STD_A/'
+#l1d = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleiades/WO_000194483_1_4_SAL24178158-4_ACQ_PNEO4_04304911719484+(2)/000194483_1_3_STD_A/'
+#l1d = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleiades/dimapV2_PHR1A_acq20180917_del518899ee/'
+#l2_dir = os.path.join('/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L2/Pleiades_Aco/', os.path.basename(os.path.normpath(l1d)))
+
 def process(l1c):
     out_name = 'Acolite_out'
     #p= Path(l1c)
@@ -36,21 +40,32 @@ def process(l1c):
         's2_target_res': 10,
         'l1r_export_geotiff_rgb': False,
         'l2r_export_geotiff_rgb': False,
-        'use_gdal_merge_import': False
+        'use_gdal_merge_import': False,
+        'reproject_inputfile': True
     }
     ac.acolite.acolite_run(settings=settings, inputfile=l1c)
 
-def main():
-        data_files = glob.glob(os.path.join(l1d+'*psscene_analytic*'))
-        #dirname = os.listdir(data_files[0])
-        print(data_files)
-        #fnames = glob.glob(data_files[0] + '*/*/*R*C*.TIF')
-        with ProcessPoolExecutor(max_workers=2) as executor:
-                executor.map(process, data_files)
+#def main():
+#        data_files = glob.glob(os.path.join(l1d+'*psscene_analytic*'))
+#        #dirname = os.listdir(data_files[0])
+#        print(data_files)
+#        #fnames = glob.glob(data_files[0] + '*/*/*R*C*.TIF')
+#        with ProcessPoolExecutor(max_workers=2) as executor:
+#                executor.map(process, data_files)
 
-if __name__ == '__main__':
-   main()
+#if __name__ == '__main__':
+#   main()
+pleiades_dir = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L1/Pleiades/WO_11_12_2024_000276222_1_2_SAL24255650-2_ACQ_PNEO4_05010814403036/'
+l2_base_dir = '/Ext_20T_andromede/0_ARCTUS_Projects/19_SAGE-Port/dataset/L2/Pleiades_Aco/'
 
+for fname in  glob.glob(os.path.join(pleiades_dir, '**', 'IMG*MS*/'), recursive=True):
+    l2_dir = os.path.join(l2_base_dir, os.path.basename(os.path.dirname(os.path.normpath(fname))))
+    l1d=os.path.dirname(os.path.normpath(fname))+'/'
+    if os.path.exists(l2_dir):
+        #print(f"Skipping {l1d} as {l2_dir} already exists.")
+        continue
+    print('THIS is the process to do', l1d)
+    process(l1c=l1d)
 #process(l1c=l1d)
 
 

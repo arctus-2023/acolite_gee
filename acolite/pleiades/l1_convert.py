@@ -61,7 +61,6 @@ def l1_convert(inputfile, output = None, settings = {},
             if pmfile == '': continue
             pmeta = ac.pleiades.metadata_parse(pmfile, pan=True)
 
-        print(pmeta)
         ## merge sensor specific settings
         setu = ac.acolite.settings.parse(meta['sensor'], settings=settings)
         verbosity = setu['verbosity']
@@ -139,6 +138,7 @@ def l1_convert(inputfile, output = None, settings = {},
                 print('Provided limit {} not covered by scene'.format(limit))
                 continue
 
+        print('##################################################################')
         ## find projection info based on first file
         dct = None
         ifile = ifiles[0]
