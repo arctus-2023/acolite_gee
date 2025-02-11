@@ -256,7 +256,12 @@ def identify_bundle(bundle, input_type = None, output = None):
             ## files now contains scene_id keys
             flist = list(files.keys())
             flist.sort()
-            fk = flist[0]
+            for x,f in enumerate(flist):
+                print('this is f in identify_bundle {}'.format(f))
+                if 'composite' in f:
+                    fk = flist[x]
+                else:
+                    fk = flist[0]
             if 'metadata' in files[fk]:
                 metafile = files[fk]['metadata']['path']
             elif 'metadata_json' in files[fk]:
